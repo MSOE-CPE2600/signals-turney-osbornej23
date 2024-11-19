@@ -4,9 +4,13 @@
  */
 
 /**
- * Modified by:
+ * Modified by: Jadyn Osborne
  * 
- * Brief summary of modifications:
+ * Brief summary of modifications: Replaced exit() with a self terminating
+ * kill function. There is an exit in case of unique error, but first it
+ * will attempt to exit via a signal kill as requested by lab. Another way
+ * of entering the handler and exiting is by pressing CTRL+C as the user,
+ * and this will send a signal interrupt to the system and enter its handler.
  */
 
 
@@ -20,7 +24,11 @@
  */
 void handle_signal() {
     printf("Received a signal\n");
-    exit(1);
+    // will end process via sigkill and not exit unless unique circumstance
+    if (kill(getpid(), SIGKILL) == -1) {
+        perror("Error: Failed to self terminate");
+        exit(1);
+    }
 }
 
 int main() {
